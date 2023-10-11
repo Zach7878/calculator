@@ -1,7 +1,9 @@
 let num1;
 let num2;
 let operator;
+let result;
 let operatorRegex=/[+-/*]/
+let displayString;
 function add(a,b){
     return a+b;
 }
@@ -61,31 +63,88 @@ buttons.forEach(button=>{
                 display.textContent+='9';
                 break;
             case '+':
-                display.textContent+='+';
+                displayString=display.textContent;
+                if(displayString.charAt(displayString.length-1)!=='+'&&displayString.charAt(displayString.length-1)!=='-'&&displayString.charAt(displayString.length-1)!=='*'&&displayString.charAt(displayString.length-1)!=='/'&&displayString!==''){
+                    display.textContent+='+';
+                }
                 break;
             case '-':
-                display.textContent+='-';
+                displayString=display.textContent;
+                if(displayString==''){
+                    display.textContent+='-';
+                }
+                else if(displayString.charAt(displayString.length-1)!=='-'){
+                    display.textContent+='-';
+                }
                 break;
             case '*':
-                display.textContent+='*';
+                displayString=display.textContent;
+                if(displayString.charAt(displayString.length-1)!=='+'&&displayString.charAt(displayString.length-1)!=='-'&&displayString.charAt(displayString.length-1)!=='*'&&displayString.charAt(displayString.length-1)!=='/'&&displayString!==''){
+                    display.textContent+='*';
+                }
                 break;
             case '/':
-                display.textContent+='/';
+                displayString=display.textContent;
+                if(displayString.charAt(displayString.length-1)!=='+'&&displayString.charAt(displayString.length-1)!=='-'&&displayString.charAt(displayString.length-1)!=='*'&&displayString.charAt(displayString.length-1)!=='/'&&displayString!==''){
+                    display.textContent+='/';
+                }
                 break;
             case '.':
                 display.textContent+='.';
                 break;
             case '=':
-                let parts=display.textContent.split(/([+-/*])/);
-                num1=parts[0]
-                for(let i=0;i<parts.length-1;i=i+2){
-                    num2=parts[i+2]
-                    operator=parts[i+1]
-                    num1=operate(num1,num2,operator);
-                    alert(num1);
+                let parts=display.textContent.split(/([+\-/*])/).filter(part => part !== "");
+                if(parts[0]=="-"){
+                    parts.splice(0,2,parts[1]*-1)
                 }
-                    
-
+                num1=parts[0]
+                let operatorAmount=0;
+                for (let i=0;i<parts.length;i++){
+                    if(parts[i]==='+'||parts[i]==='-'||parts[i]==='*'||parts[i]==='/'){
+                        operatorAmount++;
+                    }
+                }
+                for(let i=0;i<operatorAmount;i++){
+                    if(parts.indexOf('*')!==-1){
+                        if(parts[parts.indexOf('*')+1]=="-"){
+                            operatorAmount--;
+                            parts.splice(parts.indexOf('*')+1,2,parts[parts.indexOf('*')+2]*-1)
+                        }
+                        result=operate(parts[parts.indexOf('*')-1],parts[parts.indexOf('*')+1],'*')
+                        parts.splice(parts.indexOf('*')-1,3,result)
+                    }
+                    else if(parts.indexOf('/')!==-1){
+                        if(parts[parts.indexOf('/')+1]=="-"){
+                            operatorAmount--;
+                            parts.splice(parts.indexOf('/')+1,2,parts[parts.indexOf('/')+2]*-1)
+                        }
+                        result=operate(parts[parts.indexOf('/')-1],parts[parts.indexOf('/')+1],'/')
+                        parts.splice(parts.indexOf('/')-1,3,result)
+                    }
+                    else if(parts.indexOf('+')!==-1){
+                        if(parts[parts.indexOf('+')+1]=="-"){
+                            operatorAmount--;
+                            parts.splice(parts.indexOf('+')+1,2,parts[parts.indexOf('+')+2]*-1)
+                        }
+                        result=operate(parts[parts.indexOf('+')-1],parts[parts.indexOf('+')+1],'+')
+                        parts.splice(parts.indexOf('+')-1,3,result)
+                    }
+                    else if(parts.indexOf('-')!==-1){
+                        result=operate(parts[parts.indexOf('-')-1],parts[parts.indexOf('-')+1],'-')
+                        parts.splice(parts.indexOf('-')-1,3,result)
+                    }
+                    else{
+                        alert("invalid input :(");
+                    }
+                }
+                display.textContent=result;
+                break;
+            case 'Delete':
+                display.textContent=display.textContent.slice(0,-1);
+                break;
+            case 'Clear':
+                display.textContent='';
         }
+
     })
 })

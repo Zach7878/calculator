@@ -1,0 +1,23 @@
+.buttons{
+    display:flex;
+    flex-direction: column;
+}
+button{
+    width:70px;
+    font-size:40px;
+}
+#top{
+    width:144px
+}
+#display{
+    height:60px;
+    border:1px solid black;
+    width: 282px;
+    font-size: 60px;
+    margin:0px;
+    padding-left: 4;
+    margin-bottom: 10px;
+    display:flex;
+    padding-left: 8px;
+    align-items: center;
+}
